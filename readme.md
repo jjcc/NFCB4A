@@ -1,4 +1,4 @@
-This is a NFC library for Basic4Android. It adds Mifare reading function to the original official NFC library.
+This is an improved version of NFC library for Basic4Android. It adds Mifare reading functions and NfcV functions to the original official NFC library.
 
 To make the library:
 1.Change the path of  paths of 3 dependencies(android.jar, B4AShareed.jar, Core.jar) accordingly.
