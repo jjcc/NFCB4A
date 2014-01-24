@@ -5,6 +5,5 @@
 	<classpathentry kind="lib" path="E:/Program Files/Android/android-sdk-windows/platforms/android-10/android.jar"/>
 	<classpathentry kind="lib" path="E:/Program Files/Anywhere Software/Basic4android/Libraries/B4AShared.jar"/>
 	<classpathentry kind="lib" path="E:/Program Files/Anywhere Software/Basic4android/Libraries/Core.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/NFCVapps"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
