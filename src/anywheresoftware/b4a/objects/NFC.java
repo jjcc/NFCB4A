@@ -387,7 +387,7 @@ public class NFC
 	  private boolean Authenticate(byte [] key, int type) throws IOException{
 		boolean success = false;
 		byte [] userKey;
-		if (key != null && key.length == 16 ){
+		if (key != null && key.length == 6 ){
 			userKey = key;
 			if (type == 0 )
 				success = mfc.authenticateSectorWithKeyA(sectorIndex,userKey);
