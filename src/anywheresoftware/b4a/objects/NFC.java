@@ -12,6 +12,7 @@ import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.MifareClassic;
+import android.nfc.tech.MifareUltralight;
 import android.os.Parcelable;
 import android.util.Log;
 import anywheresoftware.b4a.AbsObjectWrapper;
@@ -630,4 +631,111 @@ public class NFC
 			return nd.isMemoryExceed2048bytesSize();
 		}		  
    }
+
+
+  @ShortName("UltraLight")
+  public static class UltraLightWrapper extends AbsObjectWrapper<MifareUltralight>
+  {
+
+  
+	  MifareUltralight mfu;
+	  int type;
+
+
+	    /**
+	     * Initialise the Mifare Classic object.
+	     */  		
+	  public void Initialize(Intent intent ){
+		Tag tagFromIntent = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+		mfu = MifareUltralight.get(tagFromIntent);
+		Log.i(TAG, "UL initializeded");	
+	  	if(mfu == null){
+			Log.i(TAG, "mfu null.Initialization failed");		  		
+			return;
+	  	}
+	  	type = mfu.getType();
+	  }
+
+  	/**
+     * Read a sector. 
+     * Parameter: 
+     * 	pageOffset, offset of the page to read.
+     * Return:
+     *  4 pages of data if success
+     */	  
+	  public byte[] ReadPage(int pageOffset ){
+		  	if(connectMfu() == false) //Fail to connect
+		  		return null;
+			byte [] data;	
+			try {
+
+				data = mfu.readPages(pageOffset);
+			} catch (IOException e) {
+				Log.e(TAG, e.getLocalizedMessage());
+				return null; //IO failed
+			}			  
+		  return data;
+	  }
+	  
+	/**
+	 * Connect to a Mifare UltraLight tag
+	 * @return false if failed
+	 */
+	private boolean connectMfu() {
+		if(mfu == null){
+			Log.i(TAG, "mfu null. Please initialize first");
+			return false;
+		}
+		if ( false == mfu.isConnected())
+			try {
+				mfu.connect();
+			} catch (IllegalStateException e2){
+				Log.i(TAG, "mfu connect failed,IllegalStateException");
+				try {
+					mfu.close();
+				} catch (IOException e3) {
+					
+					e3.printStackTrace();
+				}
+				e2.printStackTrace();
+				return false;					
+			}catch (IOException e1) {
+				Log.i(TAG, "mfu connect failed,IOException");
+				e1.printStackTrace();
+				return false;
+			}
+		return true;
+	}
+	  
+	  	/**
+	     * Write a page. 
+	     * Parameter: 
+	     * 	pageOffset, offset of the page to read
+	     *  data, the data bytes to write
+	     */	  
+		  public boolean WriteSector(int pageOffset ,byte [] data){
+			  	if(connectMfu() == false) //Fail to connect
+			  		return false;
+					
+				try {
+					mfu.writePage(pageOffset,  data);
+					Log.i(TAG, "a page is written, mfu closing...");
+					mfu.close();
+				} catch (IOException e) {
+					Log.e(TAG, e.getLocalizedMessage());
+					return false; //IO failed
+				}			  
+			  return false;
+		  }
+  	/**
+     * Get tag type: 1 for ultralight, 2 for ultralight C, -1 for unkown compatilbe UL
+     * Parameter: 
+     */	  
+	  
+	 public int getType(){ return this.type;}	  
+
+  }//End UltraLightWrapper
+
+
+
 }
