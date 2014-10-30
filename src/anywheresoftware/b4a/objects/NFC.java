@@ -26,7 +26,7 @@ import com.nfc.common.NfcvData;
  * Supports reading NDEF (NFC Data Exchange Format) tags.
  *See this <link>tutorial|http://www.basic4ppc.com/forum/basic4android-getting-started-tutorials/14931-reading-ndef-data-nfc-tags.html</link> for more information.
  */
-@Version(1.23F)
+@Version(1.25F)
 @ShortName("NFC")
 @Permissions(values={"android.permission.NFC"})
 public class NFC
@@ -462,31 +462,33 @@ public class NFC
     return isNfcV;
   }
   
+  
   /**
-   * Tests whether the Intent is a NfcV tag.
-   */
-  public boolean IsV(Intent intent)
+   * Tests whether the Intent is a Mifare UltraLight tag.
+   */	  
+  public boolean IsMifareUltralight(Intent intent)
   {
-		Log.i(TAG, "Checking Nfcv inside IsV");  
-	    if (intent == null)
-	        return false;
-	    Log.i(TAG, "Intent is not null");	      
-	      boolean hasExtra = intent.hasExtra(NfcAdapter.EXTRA_TAG);
-	      boolean isNfcV = false;
-	      if (hasExtra){
-	  		Tag tagFromIntent = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-	  		String strTechList[] = tagFromIntent.getTechList();
-	  		for( String s :strTechList){
-	  			Log.i(TAG, "tech:" + s);
-	  			if(s.contains("NfcV")){
-	  				isNfcV = true;
-	  				break;
-	  			}
-	  		}	    
-	      }
-	      return isNfcV;
-  }
-  /**
+    if (intent == null)
+      return false;
+    
+    boolean hasExtra = intent.hasExtra(NfcAdapter.EXTRA_TAG);
+    boolean isUl = false;
+    if (hasExtra){
+		Tag tagFromIntent = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+		String strTechList[] = tagFromIntent.getTechList();
+		for( String s :strTechList){
+			
+			if(s.contains("MifareUltralight")){
+				isUl = true;
+				break;
+			}
+		}	    
+    }
+    return isUl;
+  } 
+   
+  
+   /**
    * 
    * return an hex string of data
    */
@@ -643,7 +645,7 @@ public class NFC
 
 
 	    /**
-	     * Initialise the Mifare Classic object.
+	     * Initialise the Mifare ultralight object.
 	     */  		
 	  public void Initialize(Intent intent ){
 		Tag tagFromIntent = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
@@ -657,10 +659,10 @@ public class NFC
 	  }
 
   	/**
-     * Read a sector. 
+     * Read a page. 
      * Parameter: 
      * 	pageOffset, offset of the page to read.
-     * Return:
+     * @return:
      *  4 pages of data if success
      */	  
 	  public byte[] ReadPage(int pageOffset ){
@@ -712,6 +714,8 @@ public class NFC
 	     * Parameter: 
 	     * 	pageOffset, offset of the page to read
 	     *  data, the data bytes to write
+	     *  @return false if failed, true if success
+	     *  
 	     */	  
 		  public boolean WriteSector(int pageOffset ,byte [] data){
 			  	if(connectMfu() == false) //Fail to connect
@@ -728,8 +732,9 @@ public class NFC
 			  return false;
 		  }
   	/**
-     * Get tag type: 1 for ultralight, 2 for ultralight C, -1 for unkown compatilbe UL
-     * Parameter: 
+     * Get tag type 
+     * Parameter:
+     * @return  1 for ultralight, 2 for ultralight C, -1 for unknown compatible UL
      */	  
 	  
 	 public int getType(){ return this.type;}	  
