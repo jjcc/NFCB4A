@@ -7,8 +7,8 @@ To make the library:
 2.Inside Eclipse choose menu "File>Export>Jar File".  
 3.Run "Project>Generate Document"  
 
-More info please check the discussion in B4X community forum
-https://www.b4x.com/android/forum/threads/nfc-library.14933/#content
+More info please check the discussion in B4X community forum  
+https://www.b4x.com/android/forum/threads/nfc-library.14933/#content  
 https://www.b4x.com/android/forum/threads/adding-new-functionalities-and-tags-decoding-to-nfc-library.15946/page-4
 
  
